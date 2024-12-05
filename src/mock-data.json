@@ -1,0 +1,23 @@
+[
+    {
+      "user_id": "U001",
+      "name": "Alice",
+      "email": "alice@example.com"
+    },
+    {
+      "user_id": "U002",
+      "name": "Bob",
+      "email": "bob@example.com"
+    },
+    {
+      "user_id": "U003",
+      "name": "Charlie",
+      "email": "charlie@example.com"
+    },
+    {
+      "user_id": "U004",
+      "name": "Diana",
+      "email": "diana@example.com"
+    }
+  ]
+  
