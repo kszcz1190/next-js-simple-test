@@ -1,16 +1,27 @@
-// /src/app/actions.ts
-"use server"; // Oznaczenie pliku jako serwerowego
+"use server";
 
 import { User } from "@/types/user";
 import mockData from "../mock-data.json";
 
-// Funkcja do pobierania pojedynczego użytkownika
-export async function getSingleUser(userId: string): Promise<User | null> {
-  const users: User[] = mockData; // Pobranie danych użytkowników z mockData
+// plik serwerowy, który służy do wykonywania ackji na serwerze
+// więcej na: https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
 
-  // Znajdź użytkownika o podanym userId
+// wykonaj tę funkcję aby pobrać pojedynczego użytkownika
+// lub zwróć null jeśli użytkownik nie istnieje
+
+export const getSingleUser = async (userId: User["user_id"]) => {
+  const users: User[] = mockData;
   const user = users.find((user) => user.user_id === userId);
 
-  // Zwróć użytkownika lub null, jeśli nie znaleziono
-  return user || null;
-}
+  //error handling
+  if (!user) {
+    return null;
+  }
+
+  //Zostaw to tak jak jest aby zasymulować pobieranie danych z bazy danych, tylko odkomentuj:)
+  return new Promise<User | null>((resolve) => {
+    setTimeout(() => {
+      resolve(user);
+    }, 500);
+  });
+};

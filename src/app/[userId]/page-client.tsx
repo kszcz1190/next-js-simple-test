@@ -1,33 +1,41 @@
-// /src/app/[userId]/page-client.tsx
-"use client"; // Oznaczenie komponentu jako klientowego (renderowanego po stronie klienta)
+"use client";
 
-import { useQuery } from "@tanstack/react-query"; // Import react-query
 import { User } from "@/types/user";
-import { getSingleUser } from "@/app/actions"; // Funkcja do pobierania użytkownika
+import { useQuery } from "@tanstack/react-query";
+import { getSingleUser } from "../actions"; //<- docelowa funkcja api do pobierania usera
 
-// Funkcja do pobierania użytkownika za pomocą react-query
-async function fetchUser(userId: string): Promise<User | null> {
-  const user = await getSingleUser(userId);
-  return user;
-}
+//tutaj zrób komponent kliencki, który będzie się renderować, będzie oczekiwać na dane z serwera i je wyświetli
+// jeśli nie bedzie miał jeszcze danych to wyświetli "Loading..."
+// tutaj dobrze byłoby użyć biblioteki takiej jak react-query - dodaj ją do projektu i wykonaj zapytanie
+// więcej na: https://react-query.tanstack.com/
+// przejrzyj dokumentacje i zaimplementuj to tak aby działało z tanstack
+// w razie pytań - śmiało pisz do Aleksander Marek :)
 
-export default function PageClient({ userId }: { userId: string }) {
-  const { data, error, isLoading } = useQuery(
-    ["user", userId], // Klucz zapytania
-    () => fetchUser(userId), // Funkcja do pobrania danych
-    { retry: false } // Opcje zapytania
-  );
+export default function PageClient({ userId }: { userId: User["user_id"] }) {
+  //logika useQuery()
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => getSingleUser(userId),
+    retry: false,
+  });
 
-  if (isLoading) return <div>Ładowanie...</div>; // Wyświetl "Loading..." podczas ładowania
-  if (error) return <div>Wystąpił błąd</div>; // Obsługuje błąd
+  //logika czy zwróciło usera?
+  //tzn jeśli tanstack ma error to zwróć go
 
-  if (!data) return <div>Użytkownik nie znaleziony</div>; // Jeśli użytkownik nie został znaleziony
+  //jeśli tanstack ładuje się to zwróć "Loading..."
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!data) {
+    return <div>User not found</div>; // Jeśli nie znaleziono użytkownika
+  }
+
+  //jeśli tanstack zwrócił usera to wyświetl go zamiast samego id
   return (
     <div>
-      <h1>Witaj użytkowniku o id = {userId}</h1>
-      <p>Imię: {data.name}</p>
-      <p>Email: {data.email}</p>
+      <h1>Client</h1>
+      <p>{data.name}</p>
+      <p>{data.email}</p>
     </div>
   );
 }
